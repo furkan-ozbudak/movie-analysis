@@ -1,0 +1,10 @@
+pig -x local
+
+
+users = LOAD 'users.txt' USING PigStorage('|');
+projected = FOREACH users GENERATE $0, $1, $2, $3;
+filtered = FILTER projected by $2 == 'M' AND $3 == 'lawyer';
+ordered = ORDER filtered BY $1 DESC;
+limited = limit ordered 1;
+projected = FOREACH limited GENERATE $0;
+dump projected;

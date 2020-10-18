@@ -1,0 +1,8 @@
+pig -x local
+
+lines = LOAD 'in2.txt' using TextLoader AS (line:chararray);
+tabDelimitedWords = FOREACH lines GENERATE FLATTEN(TOKENIZE(line,'\t')) as word;
+allDelimitedWords = FOREACH tabDelimitedWords GENERATE FLATTEN(TOKENIZE(word)) as word;
+groupedWords = GROUP allDelimitedWords BY word;
+wordcount = FOREACH groupedWords GENERATE group, COUNT(allDelimitedWords);
+DUMP wordcount;

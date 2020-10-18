@@ -1,0 +1,11 @@
+pig -x local+
+
+REGISTER piggybank-0.15.0.jar;
+movies = LOAD 'movies.csv' USING org.apache.pig.piggybank.storage.CSVLoader();
+ratings = LOAD 'rating.txt';
+projectedRatings = FOREACH ratings GENERATE $1, $2;
+movieRatings = JOIN movies BY $0, projectedRatings BY $0; -- Join messes the movie title here...
+projectedMovieRatings = FOREACH movieRatings GENERATE $0, $1, $2, $4;
+filteredMovieRatings = FILTER projectedMovieRatings BY ($2 matches '.*Adventure.*') AND ($3 == 5);
+dump filteredMovieRatings;
+

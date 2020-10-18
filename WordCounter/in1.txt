@@ -1,0 +1,3 @@
+data   software technology college
+software   practice data data technology coding
+science   engineering college practice engineering

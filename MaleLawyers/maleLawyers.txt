@@ -1,0 +1,8 @@
+pig -x local
+
+users = load 'users.txt' using PigStorage('|');
+projected = FOREACH users GENERATE $2, $3;
+filtered = FILTER projected by $0 == 'M' AND $1 == 'lawyer';
+grouped = GROUP filtered ALL;
+counted = FOREACH grouped GENERATE COUNT(filtered);
+dump counted;

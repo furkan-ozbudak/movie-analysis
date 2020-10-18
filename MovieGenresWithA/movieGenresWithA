@@ -1,0 +1,13 @@
+pig -x local
+
+
+REGISTER piggybank-0.15.0.jar;
+movies = LOAD 'movies.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage();
+projected = FOREACH movies GENERATE $1, $2;
+filtered = FILTER projected BY (SUBSTRING($0, 0, 1) == 'a') OR (SUBSTRING($0, 0, 1) == 'A');
+tokenized = FOREACH filtered GENERATE $0, TOKENIZE($1, '|');
+flattened = FOREACH tokenized GENERATE $0, FLATTEN($1);
+grouped = GROUP flattened BY $1;
+counted = FOREACH grouped GENERATE group, COUNT(flattened);
+ordered = ORDER counted BY group;
+DUMP ordered;
